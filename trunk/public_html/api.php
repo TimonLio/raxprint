@@ -1,15 +1,27 @@
 <?php
 
+function parseAddress($strAddress)
+{
+	$arrInfo			= mb_explode("£¬", $strAddress);
+	$arrItem			= array();
+	$arrItem['name']	= isset($arrInfo[0]) ? trim($arrInfo[0]) : "";
+	$arrItem['phone1']	= isset($arrInfo[1]) ? trim($arrInfo[1]) : "";
+	$arrItem['phone2']	= isset($arrInfo[2]) ? trim($arrInfo[2]) : "";
+	$arrItem['address']	= isset($arrInfo[3]) ? trim($arrInfo[3]) : "";
+	$arrItem['postcode']= isset($arrInfo[4]) ? trim($arrInfo[4]) : "";
+	return $arrItem;
+}
+
 function parseInvoice($strTable, &$buyerId)
 {
-	$arrFliter	= array("åºå·", "åˆè®¡", "å¤‡æ³¨", "å–å®¶å§“åï¼š");
+	$arrFliter	= array("ÐòºÅ", "ºÏ¼Æ", "±¸×¢", "Âô¼ÒÐÕÃû£º");
 	$arrInfo	= explode("\n", $strTable);
 	$arrRet		= array();
 	foreach ($arrInfo as $key => $value) {
 		if (empty($value)) continue;
 		$arrRow = explode(" ", trim($value));
 		if (count($arrRow) < 4 || in_array($arrRow[0], $arrFliter)) continue;
-		elseif ($arrRow[0] == "ä¹°å®¶å§“åï¼š") {
+		elseif ($arrRow[0] == "Âò¼ÒÐÕÃû£º") {
 			$buyerId = " - $arrRow[1]($arrRow[4])";
 			continue;
 		}
@@ -40,7 +52,7 @@ function parseSell($content)
 			$pos				= count($arrName) - 1;
 			$arrItem['byerId']	= $arrName[$pos];
 			$arrItem['name']	= implode(" ", array_slice($arrName, 0, $pos));
-			if (ereg("\(([0-9]*) ä»¶\)", $arrItem['name'], $num)) {
+			if (ereg("\(([0-9]*) ¼þ\)", $arrItem['name'], $num)) {
 				$arrItem['num']		= $num[1];
 				$arrItem['name']	= trim(str_replace($num[0], "", $arrItem['name']));
 			}
@@ -52,22 +64,6 @@ function parseSell($content)
 	return $arrRet;
 }
 
-function parseAddress($strAddress)
-{
-	$arrInfo			= explode("ï¼Œ", $strAddress);
-	$arrItem			= array();
-	$arrItem['name']	= isset($arrInfo[0]) ? trim($arrInfo[0]) : "";
-	$arrItem['phone1']	= isset($arrInfo[1]) ? trim($arrInfo[1]) : "";
-	$arrItem['address']	= isset($arrInfo[2]) ? trim($arrInfo[2]) : "";
-	$arrItem['pcode']	= isset($arrInfo[3]) ? trim($arrInfo[3]) : "";
-	if (empty($arrItem['pcode']) == false && is_numeric($arrItem['pcode']) == false) {
-		$arrItem['phone2']	= isset($arrInfo[2]) ? trim($arrInfo[2]) : "";
-		$arrItem['address']	= isset($arrInfo[3]) ? trim($arrInfo[3]) : "";
-		$arrItem['pcode']	= isset($arrInfo[4]) ? trim($arrInfo[4]) : "";
-	} 
-	return $arrItem;
-}
-
 function parseDate($strDate, $strFormat = "y m d")
 {
 	return date($strFormat, strtotime($strDate));
@@ -76,6 +72,26 @@ function parseDate($strDate, $strFormat = "y m d")
 function convert($str, $from = "UTF-8", $to = "GBK")
 {
 	return mb_convert_encoding($str, $to, $from);
+}
+
+function mb_explode($separator, $string)
+{	
+	$sepEnc = mb_detect_encoding($separator, "GBK, UTF-8");
+	$strEnc = mb_detect_encoding($string, "GBK, UTF-8");
+
+	if ($strEnc != $sepEnc) {
+		$separator = convert($separator, $sepEnc, $strEnc);
+	}
+	return explode($separator, $string);
+}
+
+function dumpHEX($str)
+{
+	print("<br />");
+	for ($i = 0; $i < strlen($str); $i++) {
+		printf("0x%02x ", ord($str[$i]));
+	}
+	print("<br />");
 }
 
 class Point
@@ -94,7 +110,7 @@ class Point
 }
 
 $arrPosition = array(
-	// éŸµè¾¾
+	// ÔÏ´ï
 	0	=> array(
 		"dateFormat"	=> "y   m   d",
 		"size"			=> new Point(127, 232),
@@ -114,7 +130,7 @@ $arrPosition = array(
 		"dstName"		=> new Point(164, 42),
 	),
 
-	// ç”³é€š
+	// ÉêÍ¨
 	1	=> array(
 		"dateFormat"	=> "y m d",
 		"size"			=> new Point(127, 232),
@@ -134,7 +150,7 @@ $arrPosition = array(
 		"dstName"		=> new Point(150, 64),
 	),
 
-	// åœ†é€š
+	// Ô²Í¨
 	2	=> array(
 		"dateFormat"	=> "y   m   d",
 		"size"			=> new Point(127, 232),
@@ -154,7 +170,7 @@ $arrPosition = array(
 		"dstName"		=> new Point(102, 46),
 	),
 	
-	// ä¸­é€š
+	// ÖÐÍ¨
 	3	=> array(
 		"dateFormat"	=> "m   d",
 		"size"			=> new Point(127, 232),
@@ -174,7 +190,7 @@ $arrPosition = array(
 		"dstName"		=> new Point(133, 36),
 	),
 	
-	// å¤©å¤©
+	// ÌìÌì
 	4	=> array(
 		"dateFormat"	=> "Y-m-d",
 		"size"			=> new Point(127, 232),
@@ -194,7 +210,7 @@ $arrPosition = array(
 		"dstName"		=> new Point(132, 73),
 	),	
 
-	// é¡ºä¸°
+	// Ë³·á
 	5	=> array(
 		"dateFormat"	=> "m    d",
 		"size"			=> new Point(140, 217),
@@ -214,6 +230,7 @@ $arrPosition = array(
 		"dstName"		=> new Point(195, 41),
 	),
 	
-);
+); 
 
+# vim:set shiftwidth=4 tabstop=4:
 ?>
