@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>打印发货单</title>
+<style type="text/css">
+body { font-size: 16px; background-color:#F3F3F3; }
+input { font-size:16px; }
+textarea { font-size:16px; }
+label { cursor:pointer; }
+.button { width:120px; font-size:1.2em; font-weight:bold; }
+.title { background-color: #E3E3E3; }
+</style>
+<script type="text/javascript" language="javascript">
+function setPostage(value) {
+	var obj = document.getElementById("postage");
+	obj.value = value;
+}
+function setSender(value) {
+	var obj = document.getElementById("sender");
+	obj.value = value;
+}
+function setDate(value) {
+	var year	= 0;
+	var month	= 0;
+	var day		= 0;
+	var date	= new Date();
+	var obj		= document.getElementById("date");
+	date.setTime(date.getTime() + value * 86400000);
+	year	= date.getFullYear();
+	month	= date.getMonth() + 1;
+	day		= date.getDate();
+	obj.value = year + "-" + month + "-" + day;
+}
+window.onload = function() {
+	var date	= new Date();
+	var id		= date.getHours() >= 18 ? "postage_chk_1" : "postage_chk_0";
+	var obj		= document.getElementById(id);
+	obj.click();
+}
+</script>
+</head>
+<body>
+<form action="sellout.php" method="POST" name="invoice_form" target="_blank" id="invoice_form">
+  <table width="100%" border="0" cellpadding="3">
+    <tr>
+      <td width="10%" align="right" class="title">货品清单: </td>
+      <td><textarea name="list" cols="80" rows="6"></textarea></td>
+    </tr>
+    <tr>
+      <td align="right" class="title">备注:</td>
+      <td><input name="note" type="text" size="82" /></td>
+    </tr>
+    <tr>
+      <td align="right" class="title">邮费:</td>
+      <td><input name="postage" type="text" id="postage" value="5" size="24" />&nbsp; &nbsp;
+      <label>
+        <input type="radio" name="postage_chk" value="0" onclick="javascript:setPostage(this.value);" />
+        包邮 &nbsp;&nbsp;</label>
+      <label>
+        <input type="radio" name="postage_chk" value="5" onclick="javascript:setPostage(this.value);" checked="checked" />
+        5 &nbsp;&nbsp;</label>
+        <label>
+        <input type="radio" name="postage_chk" value="10" onclick="javascript:setPostage(this.value);" />
+        10 &nbsp;&nbsp;</label>
+        <label>
+        <input type="radio" name="postage_chk" value="12" onclick="javascript:setPostage(this.value);" />
+        12 &nbsp;&nbsp;</label>
+        <label>
+        <input type="radio" name="postage_chk" value="15" onclick="javascript:setPostage(this.value);" />
+        15 &nbsp;&nbsp;</label>
+        <label>
+        <input type="radio" name="postage_chk" value="20"  onclick="javascript:setPostage(this.value);" />
+        20 &nbsp;&nbsp;</label>
+        <label>
+        <input type="radio" name="postage_chk" value="25" onclick="javascript:setPostage(this.value);" />
+        25 &nbsp;&nbsp;</label>      </td>
+    </tr>
+    <tr>
+      <td align="right" class="title">发件人:</td>
+      <td><input name="sender" type="text" id="sender" value="冰心抹茶" size="24" />&nbsp; &nbsp;
+      <label>
+        <input type="radio" name="sender_chk" onclick="javascript:setSender(this.value);" value="冰心抹茶" checked="checked" />
+        冰心抹茶 &nbsp;&nbsp;</label>	</td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td><input type="submit" value=" 提 交 " class="button" /></td>
+    </tr>
+  </table>
+</form>
+<br />
+<hr width="95%" size="1" noshade="noshade" />
+<br />
+<form id="express_form" name="express_form" method="post" target="_blank" action="express.php">
+  <table width="100%" border="0" cellpadding="3">
+    <tr>
+      <td width="10%" align="right" class="title">收件人地址:</td>
+      <td><textarea name="address" cols="80" rows="4" id="address"></textarea></td>
+    </tr>
+    <tr>
+      <td align="right" class="title">备注:</td>
+      <td><input name="comment" type="text" id="comment" value="" size="82" /></td>
+    </tr>
+    <tr>
+      <td align="right" class="title">发件日期:</td>
+      <td><input name="date" type="text" id="date" value="" size="24" />&nbsp; &nbsp;
+      <label>
+        <input type="radio" name="postage_chk" id="postage_chk_0" value="0" onclick="javascript:setDate(this.value);" checked="checked" />
+        今天 &nbsp;&nbsp;</label>
+      <label>
+        <input type="radio" name="postage_chk" id="postage_chk_1" value="1" onclick="javascript:setDate(this.value);" />
+        明天 &nbsp;&nbsp;</label>
+      <label>
+        <input type="radio" name="postage_chk" id="postage_chk_2" value="2" onclick="javascript:setDate(this.value);" />
+        后天 &nbsp;&nbsp;</label>
+      </td>
+    </tr>
+    <tr>
+      <td align="right" class="title">快递商:</td>
+      <td><label>
+        <input type="radio" name="express" value="0" checked="checked" />
+        韵达 &nbsp;&nbsp;</label>
+        <label>
+        <input type="radio" name="express" value="1" />
+        申通 &nbsp;&nbsp;</label>
+        <label>
+        <input type="radio" name="express" value="2" />
+        圆通 &nbsp;&nbsp;</label>
+        <label>
+        <input type="radio" name="express" value="3" />
+        中通 &nbsp;&nbsp;</label>
+        <label>
+        <input type="radio" name="express" value="4" />
+        天天 &nbsp;&nbsp;</label>
+        <label>
+        <input type="radio" name="express" value="5" />
+        顺丰 &nbsp;&nbsp;</label>
+      </td>
+    </tr>
+    <tr>
+      <td align="right">&nbsp;</td>
+      <td><input type="submit" value=" 提 交 " class="button" /></td>
+    </tr>
+  </table>
+</form>
+</body>
+</html>
