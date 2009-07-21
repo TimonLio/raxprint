@@ -26,7 +26,7 @@ if ($arrPos['srcPCode'] != NULL) $objPDF->Text($arrPos['srcPCode']->x, $arrPos['
 
 $objPDF->Text($arrPos['dstPhone1']->x, $arrPos['dstPhone1']->y, $arrInfo['phone1']);
 if (isset($arrInfo['phone2'])) $objPDF->Text($arrPos['dstPhone2']->x, $arrPos['dstPhone2']->y, $arrInfo['phone2']);
-if ($arrPos['dstPCode'] != NULL) $objPDF->Text($arrPos['dstPCode']->x, $arrPos['srcPCode']->y, $arrInfo['pcode']);
+if ($arrPos['dstPCode'] != NULL) $objPDF->Text($arrPos['dstPCode']->x, $arrPos['srcPCode']->y, $arrInfo['postcode']);
 
 $objPDF->SetFont("GB");
 $oSize = $objPDF->GetFontSize();
@@ -49,4 +49,5 @@ $objPDF->SetFontSize($oSize);
 
 $objPDF->Output();
 
+# vim:set shiftwidth=4 tabstop=4:
 ?>
